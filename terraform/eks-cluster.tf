@@ -16,8 +16,10 @@ module "eks" {
   cluster_addons = {
     aws-ebs-csi-driver = {
       resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
     }
   }
+
   eks_managed_node_groups = {
     one = {
       name = "node-group-1"
