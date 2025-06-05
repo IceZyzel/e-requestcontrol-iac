@@ -5,40 +5,44 @@ module "eks" {
   cluster_name    = local.cluster_name
   cluster_version = "1.27"
 
-  vpc_id                         = module.vpc.vpc_id
-  subnet_ids                     = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
   cluster_endpoint_public_access = true
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
-
-  }
-  cluster_addons = {
-    aws-ebs-csi-driver = {
-      resolve_conflicts_on_create = "OVERWRITE"
-      resolve_conflicts_on_update = "OVERWRITE"
-    }
   }
 
   eks_managed_node_groups = {
     one = {
-      name = "node-group-1"
-
+      name           = "node-group-1"
       instance_types = ["t3.small"]
+      min_size       = 1
+      max_size       = 3
+      desired_size   = 2
 
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
+      iam_instance_profile_name = aws_iam_instance_profile.node_instance_profile.name
+
+      # или просто
+      # iam_role_arn = aws_iam_role.node_instance_role.arn
     }
-
     two = {
-      name = "node-group-2"
-
+      name           = "node-group-2"
       instance_types = ["t3.small"]
+      min_size       = 1
+      max_size       = 2
+      desired_size   = 1
 
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
+      iam_instance_profile_name = aws_iam_instance_profile.node_instance_profile.name
+
+    }
+  }
+
+  cluster_addons = {
+    aws-ebs-csi-driver = {
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
     }
   }
 }
