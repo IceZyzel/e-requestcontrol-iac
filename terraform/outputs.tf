@@ -20,5 +20,7 @@ output "cluster_security_group_id" {
 }
 
 output "alb_controller_irsa_role_arn" {
-  value = module.alb_irsa.iam_role_arn
+  value = aws_iam_role.alb_controller.arn
+  description = "IAM Role ARN for ALB controller"
 }
+
